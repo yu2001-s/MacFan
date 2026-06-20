@@ -1,26 +1,107 @@
 # MacFan
 
-MacFan is a small macOS menu bar app for reading and controlling SMC fan speeds.
+MacFan is a small macOS menu bar app for reading and controlling Mac fan speeds.
+It provides per-fan sliders, Auto and Max controls, group controls, and a
+bundled command-line helper for SMC writes.
 
-The first version follows the shape used by [exelban/stats](https://github.com/exelban/stats): fan data comes from SMC keys such as `FNum`, `F0Ac`, `F0Mn`, `F0Mx`, `F0Tg`, and mode keys such as `F0Md` or `F0md`.
+The SMC access layer follows the shape used by
+[exelban/stats](https://github.com/exelban/stats), including fan keys such as
+`FNum`, `F0Ac`, `F0Mn`, `F0Mx`, `F0Tg`, and mode keys such as `F0Md` or
+`F0md`.
 
-## Run
+## Features
+
+- Menu bar fan icon with the current fan state in the tooltip.
+- Floating control panel plus a normal control window when the app is opened.
+- Per-fan Auto and Max buttons.
+- All Auto and All Max group controls.
+- Continuous sliders that apply after a short debounce; no separate Apply step.
+- Privileged helper for fan writes, installed only when a write is needed.
+- `macfanctl` CLI for listing fans, setting RPM, setting mode, and reset.
+
+## Requirements
+
+- macOS 14 or newer.
+- A Mac that exposes fan control through AppleSMC keys.
+- Administrator password the first time MacFan installs its helper.
+- Xcode command line tools if building from source.
+
+## Install
+
+Download the latest `MacFan-<version>-macos.zip` from GitHub Releases, unzip it,
+and move `MacFan.app` to `/Applications`.
+
+Public release artifacts are development/ad-hoc signed unless a Developer ID
+certificate and notarization are configured. If Gatekeeper blocks a downloaded
+build, build from source locally or see [Install](docs/INSTALL.md) for the exact
+macOS prompts and safer verification commands.
+
+To build and install from source:
+
+```sh
+git clone https://github.com/yu2001-s/MacFan.git
+cd MacFan
+./script/install_app.sh
+```
+
+To build and run without installing:
 
 ```sh
 ./script/build_and_run.sh
 ```
 
-The app runs as a menu-bar-only utility. Use the fan icon in the menu bar to refresh, switch a fan between automatic and manual mode, apply a target RPM, or reset all fans to automatic mode.
+To create a release zip locally:
 
-Changing fan control installs the bundled `macfanctl` helper once at `/Library/PrivilegedHelperTools/com.shaoyuhuang.MacFan.macfanctl` through macOS' administrator prompt. Reads stay in the menu app; writes run through the installed helper so SMC accepts them on systems that require privileged access.
+```sh
+./script/package_release.sh
+```
 
-The build script signs `dist/MacFan.app` and its bundled helper with the first available `Apple Development:` code signing identity. Set `MACFAN_CODESIGN_IDENTITY` to override that choice.
+## Controls
 
-## Notes
+- Drag a fan slider to set that fan's target RPM. The change applies
+  automatically after a short pause.
+- Auto returns that fan to system control.
+- Max sets that fan to its firmware-reported maximum RPM.
+- All Auto returns every fan to system control.
+- All Max sets every fan to its own firmware-reported maximum RPM.
+- Refresh reloads the SMC fan state.
+- Window opens the larger control window.
 
-- On macOS 26 and newer, System Settings can hide menu bar items until the app is allowed under System Settings > Menu Bar.
-- Some firmware can still reject manual control even when the helper is running as root. When that happens, MacFan shows the SMC error in the menu.
-- `macfanctl` can also be run directly from the bundle at `dist/MacFan.app/Contents/Helpers/macfanctl`.
-- If helper installation succeeds, later fan changes should not repeatedly ask for the administrator password.
-- Apple Development signing is valid for local development. Sharing the app outside your machine still requires a Developer ID/notarization or App Store distribution flow.
-- Use conservative fan speeds. Hardware and firmware protections still apply, but manual fan control can increase noise, wear, or heat if misused.
+The menu bar item intentionally shows only the fan icon. RPM is shown in the
+tooltip and control UI.
+
+## CLI
+
+The bundled helper can also be used directly:
+
+```sh
+MacFan.app/Contents/Helpers/macfanctl fans
+MacFan.app/Contents/Helpers/macfanctl fans --json
+MacFan.app/Contents/Helpers/macfanctl set-speed --id 0 --rpm 3000
+MacFan.app/Contents/Helpers/macfanctl set-mode --id 0 --mode auto
+MacFan.app/Contents/Helpers/macfanctl reset
+```
+
+When used from the app, writes run through the installed privileged helper at:
+
+```text
+/Library/PrivilegedHelperTools/com.shaoyuhuang.MacFan.macfanctl
+```
+
+## Documentation
+
+- [Install](docs/INSTALL.md)
+- [Development](docs/DEVELOPMENT.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Security notes](docs/SECURITY.md)
+- [Third party notices](THIRD_PARTY_NOTICES.md)
+
+## Safety
+
+Manual fan control can affect temperature, noise, and fan wear. Hardware and
+firmware protections still apply, but use conservative values and return to Auto
+when you no longer need manual control.
+
+## License
+
+MacFan is released under the MIT License. See [LICENSE](LICENSE).

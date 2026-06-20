@@ -5,6 +5,8 @@ MODE="${1:-run}"
 APP_NAME="MacFan"
 BUNDLE_ID="com.shaoyuhuang.MacFan"
 MIN_SYSTEM_VERSION="14.0"
+APP_VERSION="${MACFAN_VERSION:-0.2.0}"
+BUILD_NUMBER="${MACFAN_BUILD_NUMBER:-1}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
@@ -17,7 +19,9 @@ INFO_PLIST="$APP_CONTENTS/Info.plist"
 TOOL_NAME="macfanctl"
 CODE_SIGN_IDENTITY="${MACFAN_CODESIGN_IDENTITY:-}"
 
-pkill -x "$APP_NAME" >/dev/null 2>&1 || true
+if [[ "$MODE" != "--build-only" && "$MODE" != "build-only" ]]; then
+  pkill -x "$APP_NAME" >/dev/null 2>&1 || true
+fi
 
 swift build --product "$APP_NAME"
 swift build --product "$TOOL_NAME"
@@ -46,9 +50,9 @@ cat >"$INFO_PLIST" <<PLIST
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
-  <string>0.1.0</string>
+  <string>$APP_VERSION</string>
   <key>CFBundleVersion</key>
-  <string>1</string>
+  <string>$BUILD_NUMBER</string>
   <key>LSMinimumSystemVersion</key>
   <string>$MIN_SYSTEM_VERSION</string>
   <key>LSUIElement</key>
@@ -64,8 +68,9 @@ if [[ -z "$CODE_SIGN_IDENTITY" ]]; then
 fi
 
 if [[ -z "$CODE_SIGN_IDENTITY" ]]; then
-  echo "No Apple Development code signing identity found. Set MACFAN_CODESIGN_IDENTITY to override." >&2
-  exit 1
+  CODE_SIGN_IDENTITY="-"
+  echo "No Apple Development code signing identity found. Using ad-hoc signing." >&2
+  echo "Set MACFAN_CODESIGN_IDENTITY to use a specific certificate." >&2
 fi
 
 /usr/bin/codesign --force --timestamp=none --sign "$CODE_SIGN_IDENTITY" "$APP_HELPERS/$TOOL_NAME" >/dev/null
@@ -76,6 +81,8 @@ open_app() {
 }
 
 case "$MODE" in
+  --build-only|build-only)
+    ;;
   run)
     open_app
     ;;
@@ -96,7 +103,7 @@ case "$MODE" in
     pgrep -x "$APP_NAME" >/dev/null
     ;;
   *)
-    echo "usage: $0 [run|--debug|--logs|--telemetry|--verify]" >&2
+    echo "usage: $0 [run|--build-only|--debug|--logs|--telemetry|--verify]" >&2
     exit 2
     ;;
 esac

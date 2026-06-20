@@ -134,7 +134,7 @@ final class StatusBarController: NSObject {
         }
     }
 
-    private func showControlWindow() {
+    func showControlWindow() {
         closePanel()
 
         let window: NSWindow

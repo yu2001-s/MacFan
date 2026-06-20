@@ -10,7 +10,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        statusBarController = StatusBarController(store: AppEnvironment.fanStore)
+        let controller = StatusBarController(store: AppEnvironment.fanStore)
+        statusBarController = controller
+
+        DispatchQueue.main.async {
+            controller.showControlWindow()
+        }
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        statusBarController?.showControlWindow()
+        return false
     }
 }
 
