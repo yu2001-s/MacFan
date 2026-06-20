@@ -1,0 +1,44 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:MacFan}",
+            "name": "Debug MacFan",
+            "target": "MacFan",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug MacFan"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:MacFan}",
+            "name": "Release MacFan",
+            "target": "MacFan",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release MacFan"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:MacFan}",
+            "name": "Debug macfanctl",
+            "target": "macfanctl",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug macfanctl"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:MacFan}",
+            "name": "Release macfanctl",
+            "target": "macfanctl",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release macfanctl"
+        }
+    ]
+}
