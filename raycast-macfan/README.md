@@ -21,7 +21,7 @@ This local Raycast extension controls MacFan through the installed privileged
    npm run dev
    ```
 
-4. In Raycast, use `Control Fans`, `All Fans Auto`, or `All Fans Max`.
+4. In Raycast, use `Control Fans`, `Auto Fan`, or `Max Fan`.
 
 If you install the helper somewhere else, open Raycast Preferences, find the
 MacFan extension, and update `macfanctl Helper Path`.

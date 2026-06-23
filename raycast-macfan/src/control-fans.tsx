@@ -120,12 +120,12 @@ function FanListItem({ fan, reload }: { fan: FanInfo; reload: () => Promise<void
           />
           <ActionPanel.Section>
             <Action
-              title="All Fans Max"
+              title="Max Fan"
               shortcut={{ modifiers: ["cmd", "shift"], key: "m" }}
               onAction={() => runFanAction("Setting fans to Max", "Fans set to Max", reload, setAllFansMaximum)}
             />
             <Action
-              title="All Fans Auto"
+              title="Auto Fan"
               shortcut={{ modifiers: ["cmd", "shift"], key: "a" }}
               onAction={() => runFanAction("Returning fans to Auto", "Fans returned to Auto", reload, resetFanControl)}
             />

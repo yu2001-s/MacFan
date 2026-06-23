@@ -18,18 +18,18 @@ declare type Preferences = ExtensionPreferences
 declare namespace Preferences {
   /** Preferences accessible in the `control-fans` command */
   export type ControlFans = ExtensionPreferences & {}
-  /** Preferences accessible in the `all-auto` command */
-  export type AllAuto = ExtensionPreferences & {}
-  /** Preferences accessible in the `all-max` command */
-  export type AllMax = ExtensionPreferences & {}
+  /** Preferences accessible in the `auto-fan` command */
+  export type AutoFan = ExtensionPreferences & {}
+  /** Preferences accessible in the `max-fan` command */
+  export type MaxFan = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
   /** Arguments passed to the `control-fans` command */
   export type ControlFans = {}
-  /** Arguments passed to the `all-auto` command */
-  export type AllAuto = {}
-  /** Arguments passed to the `all-max` command */
-  export type AllMax = {}
+  /** Arguments passed to the `auto-fan` command */
+  export type AutoFan = {}
+  /** Arguments passed to the `max-fan` command */
+  export type MaxFan = {}
 }
 

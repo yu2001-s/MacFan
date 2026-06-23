@@ -19,14 +19,14 @@
       "mode": "view"
     },
     {
-      "name": "all-auto",
-      "title": "All Fans Auto",
+      "name": "auto-fan",
+      "title": "Auto Fan",
       "description": "Return all fans to automatic control.",
       "mode": "no-view"
     },
     {
-      "name": "all-max",
-      "title": "All Fans Max",
+      "name": "max-fan",
+      "title": "Max Fan",
       "description": "Set every fan to its firmware-reported maximum RPM.",
       "mode": "no-view"
     }

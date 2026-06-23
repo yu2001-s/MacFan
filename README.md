@@ -92,7 +92,7 @@ When used from the app, writes run through the installed privileged helper at:
 ## Raycast
 
 A local Raycast extension is available in [raycast-macfan](raycast-macfan).
-It exposes `Control Fans`, `All Fans Auto`, and `All Fans Max` commands.
+It exposes `Control Fans`, `Auto Fan`, and `Max Fan` commands.
 
 ```sh
 cd raycast-macfan
