@@ -18,6 +18,7 @@ The SMC access layer follows the shape used by
 - Continuous sliders that apply after a short debounce; no separate Apply step.
 - Privileged helper for fan writes, installed only when a write is needed.
 - `macfanctl` CLI for listing fans, setting RPM, setting mode, and reset.
+- Local Raycast extension for controlling fans from Raycast.
 
 ## Requirements
 
@@ -86,6 +87,17 @@ When used from the app, writes run through the installed privileged helper at:
 
 ```text
 /Library/PrivilegedHelperTools/com.shaoyuhuang.MacFan.macfanctl
+```
+
+## Raycast
+
+A local Raycast extension is available in [raycast-macfan](raycast-macfan).
+It exposes `Control Fans`, `All Fans Auto`, and `All Fans Max` commands.
+
+```sh
+cd raycast-macfan
+npm install
+npm run dev
 ```
 
 ## Documentation
