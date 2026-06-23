@@ -13,6 +13,8 @@ import {
   defaultTargetRPM,
   displayName,
   FanInfo,
+  isMissingHelperError,
+  MACFAN_RELEASES_URL,
   modeTitle,
   percentOfRange,
   readFans,
@@ -29,16 +31,19 @@ export default function Command() {
   const [fans, setFans] = useState<FanInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>();
+  const [missingHelper, setMissingHelper] = useState(false);
 
   const loadFans = useCallback(async () => {
     setIsLoading(true);
     setError(undefined);
+    setMissingHelper(false);
 
     try {
       setFans(await readFans());
     } catch (error) {
       setFans([]);
       setError(toErrorMessage(error));
+      setMissingHelper(isMissingHelperError(error));
     } finally {
       setIsLoading(false);
     }
@@ -57,6 +62,7 @@ export default function Command() {
           actions={
             <ActionPanel>
               <Action title="Refresh" shortcut={{ modifiers: ["cmd"], key: "r" }} onAction={loadFans} />
+              {missingHelper ? <Action.OpenInBrowser title="Download MacFan" url={MACFAN_RELEASES_URL} /> : null}
               <Action title="Open Extension Preferences" onAction={openExtensionPreferences} />
             </ActionPanel>
           }

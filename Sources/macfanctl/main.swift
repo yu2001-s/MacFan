@@ -93,7 +93,7 @@ struct MacFanControlTool {
 }
 
 private enum ToolVersion {
-    static let current = "0.2.0"
+    static let current = "0.2.1"
 }
 
 private enum ToolError: LocalizedError {

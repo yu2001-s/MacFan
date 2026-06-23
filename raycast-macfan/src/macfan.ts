@@ -3,6 +3,8 @@ import { execFile } from "node:child_process";
 
 const DEFAULT_HELPER_PATH = "/Library/PrivilegedHelperTools/com.shaoyuhuang.MacFan.macfanctl";
 
+export const MACFAN_RELEASES_URL = "https://github.com/yu2001-s/MacFan/releases/latest";
+
 type ExtensionPreferences = {
   helperPath: string;
 };
@@ -49,7 +51,18 @@ export function percentOfRange(fan: FanInfo): number {
 }
 
 export function toErrorMessage(error: unknown): string {
+  if (isMissingHelperError(error)) {
+    return "MacFan helper is not installed yet. Install MacFan, open it once, and make one fan change so macOS can install the privileged helper.";
+  }
+
   return error instanceof Error ? error.message : String(error);
+}
+
+export function isMissingHelperError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    ("code" in error ? error.code === "ENOENT" : false)
+  );
 }
 
 export async function readFans(): Promise<FanInfo[]> {
@@ -105,7 +118,13 @@ function runMacFanCtl(arguments_: string[]): Promise<string> {
       (error, stdout, stderr) => {
         if (error) {
           const detail = stderr.trim() || error.message;
-          reject(new Error(detail));
+          const commandError = new Error(detail);
+
+          if ("code" in error) {
+            Object.assign(commandError, { code: error.code });
+          }
+
+          reject(commandError);
           return;
         }
 

@@ -23,7 +23,7 @@ enum AuthorizedToolError: LocalizedError {
 final class AuthorizedToolRunner {
     private let fileManager = FileManager.default
     private let installedToolURL = URL(fileURLWithPath: "/Library/PrivilegedHelperTools/com.shaoyuhuang.MacFan.macfanctl")
-    private let requiredToolVersion = "0.2.0"
+    private let requiredToolVersion = "0.2.1"
 
     func run(arguments: [String]) throws {
         let toolURL = try ensureInstalledTool()

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 APP_NAME="MacFan"
-VERSION="${1:-${MACFAN_VERSION:-0.2.0}}"
+VERSION="${1:-${MACFAN_VERSION:-0.2.1}}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$ROOT_DIR/dist"

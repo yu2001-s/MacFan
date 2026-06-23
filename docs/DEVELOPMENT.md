@@ -57,14 +57,14 @@ This builds the app, copies it to `/Applications/MacFan.app`, and opens it.
 The script writes:
 
 ```text
-artifacts/MacFan-0.2.0-macos.zip
-artifacts/MacFan-0.2.0-macos.zip.sha256
+artifacts/MacFan-0.2.1-macos.zip
+artifacts/MacFan-0.2.1-macos.zip.sha256
 ```
 
 Use a custom version:
 
 ```sh
-./script/package_release.sh 0.2.1
+./script/package_release.sh 0.2.2
 ```
 
 ## Signing

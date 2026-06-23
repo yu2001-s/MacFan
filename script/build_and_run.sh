@@ -5,7 +5,7 @@ MODE="${1:-run}"
 APP_NAME="MacFan"
 BUNDLE_ID="com.shaoyuhuang.MacFan"
 MIN_SYSTEM_VERSION="14.0"
-APP_VERSION="${MACFAN_VERSION:-0.2.0}"
+APP_VERSION="${MACFAN_VERSION:-0.2.1}"
 BUILD_NUMBER="${MACFAN_BUILD_NUMBER:-1}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
