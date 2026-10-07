@@ -3,20 +3,8 @@
 The easiest public distribution path is:
 
 1. Publish `MacFan.app` on GitHub Releases.
-2. Publish `raycast-macfan` to the Raycast Store.
-3. Tell users to install MacFan first, open it once, and make one fan change so
+2. Tell users to install MacFan first, open it once, and make one fan change so
    macOS installs the privileged helper.
-4. Then users install the Raycast extension and control fans from Raycast.
-
-The Raycast extension intentionally does not bundle `macfanctl`. It calls the
-installed helper at:
-
-```text
-/Library/PrivilegedHelperTools/com.shaoyuhuang.MacFan.macfanctl
-```
-
-That keeps SMC writes behind the same macOS administrator prompt and helper
-validation path as the app.
 
 ## Mac App Release
 
@@ -46,37 +34,7 @@ Recommended release notes:
 2. Unzip it and move `MacFan.app` to `/Applications`.
 3. Open MacFan.
 4. Make one fan change so macOS can install the privileged helper.
-5. Optional: install the Raycast extension to control fans from Raycast.
 ```
-
-## Raycast Store Release
-
-Before publishing:
-
-1. Update `author` in `raycast-macfan/package.json` to your real Raycast handle.
-2. Keep `package-lock.json` committed.
-3. Keep `raycast-macfan/CHANGELOG.md` updated.
-4. Confirm the latest MacFan GitHub Release exists.
-
-Validate locally:
-
-```sh
-cd raycast-macfan
-npm install
-npm run build
-npm run lint
-```
-
-Publish:
-
-```sh
-npx ray login
-npm run publish
-```
-
-Raycast's publish command opens a pull request against `raycast/extensions`.
-After Raycast review and merge, the extension appears in the public Raycast
-Store.
 
 ## Homebrew Later
 

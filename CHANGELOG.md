@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Moved the Raycast extension out of this repository into a separate Toolbox
+  extension.
+
 ## 0.2.1
 
 - Added a local Raycast extension with commands for viewing fans, custom RPM,
