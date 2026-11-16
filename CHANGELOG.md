@@ -1,7 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
+- Added `macfanctl temps` for CPU, GPU, and peak die temperatures.
+- Added `macfanctl smart`, a temperature-driven fan curve with Quiet, Balanced,
+  and Cool profiles that hands the fans back to macOS when the Mac is cool or
+  when it stops.
 - Moved the Raycast extension out of this repository into a separate Toolbox
   extension.
 

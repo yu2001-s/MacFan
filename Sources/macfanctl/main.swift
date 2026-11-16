@@ -49,6 +49,27 @@ struct MacFanControlTool {
             try client.setFanMode(id, mode: mode)
             print("Set fan \(id) mode to \(mode.title)")
 
+        case "temps", "temperatures":
+            let reading = try TemperatureSensors(client: client).read()
+            if options.flag("json") {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                FileHandle.standardOutput.write(try encoder.encode(reading))
+                FileHandle.standardOutput.writeLine("")
+            } else {
+                print("CPU: \(reading.cpu.map { String(format: "%.1f °C", $0) } ?? "--")")
+                print("GPU: \(reading.gpu.map { String(format: "%.1f °C", $0) } ?? "--")")
+                print("Peak: \(reading.peak.map { String(format: "%.1f °C", $0) } ?? "--")")
+            }
+
+        case "smart":
+            let profile = try options.profile("profile") ?? .balanced
+            let interval = try options.double("interval") ?? 2
+            guard (0.5...30).contains(interval) else {
+                throw ToolError.invalidArguments("--interval must be between 0.5 and 30 seconds.")
+            }
+            try SmartFanLoop(client: client, profile: profile, interval: interval, dryRun: options.flag("dry-run")).run()
+
         case "reset":
             try client.resetFanControl()
             print("Reset all fans to automatic control")
@@ -85,6 +106,8 @@ struct MacFanControlTool {
           macfanctl fans [--json]
           macfanctl set-speed --id <fan-id> --rpm <rpm>
           macfanctl set-mode --id <fan-id> --mode <auto|manual|0|1>
+          macfanctl temps [--json]
+          macfanctl smart [--profile <quiet|balanced|cool>] [--interval <seconds>] [--dry-run]
           macfanctl reset
           macfanctl doctor
           macfanctl version
@@ -93,7 +116,7 @@ struct MacFanControlTool {
 }
 
 private enum ToolVersion {
-    static let current = "0.2.1"
+    static let current = "0.3.0"
 }
 
 private enum ToolError: LocalizedError {
@@ -142,6 +165,27 @@ private struct Options {
             throw ToolError.invalidArguments("Missing or invalid --\(key).")
         }
         return intValue
+    }
+
+    func double(_ key: String) throws -> Double? {
+        guard let value = values[key] else {
+            return nil
+        }
+        guard let doubleValue = Double(value), doubleValue.isFinite else {
+            throw ToolError.invalidArguments("Invalid --\(key): \(value).")
+        }
+        return doubleValue
+    }
+
+    func profile(_ key: String) throws -> SmartFanProfile? {
+        guard let value = values[key] else {
+            return nil
+        }
+        guard let profile = SmartFanProfile(rawValue: value.lowercased()) else {
+            let names = SmartFanProfile.allCases.map(\.rawValue).joined(separator: ", ")
+            throw ToolError.invalidArguments("Invalid --\(key): \(value). Use one of: \(names).")
+        }
+        return profile
     }
 
     func requiredFanMode(_ key: String) throws -> FanMode {

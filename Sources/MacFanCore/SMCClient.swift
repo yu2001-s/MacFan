@@ -296,6 +296,47 @@ public final class SMCClient {
         }
     }
 
+    /// Every key the SMC reports, in index order.
+    public func allKeys() throws -> [String] {
+        guard let count = try getDouble("#KEY"), count > 0 else {
+            return []
+        }
+
+        var keys: [String] = []
+        keys.reserveCapacity(Int(count))
+
+        for index in 0..<Int(count) {
+            var input = SMCKeyData()
+            var output = SMCKeyData()
+            input.data8 = SMCCommand.readIndex.rawValue
+            input.data32 = UInt32(index)
+
+            guard call(SMCCommand.kernelIndex.rawValue, input: &input, output: &output) == kIOReturnSuccess else {
+                continue
+            }
+
+            keys.append(output.key.smcString)
+        }
+
+        return keys
+    }
+
+    /// A temperature key's value in degrees Celsius, or nil when the key is missing or not a temperature type.
+    public func readTemperature(_ key: String) -> Double? {
+        guard let value = try? readValue(key), value.dataSize > 0 else {
+            return nil
+        }
+
+        switch value.dataType {
+        case SMCDataType.flt.rawValue:
+            return Double(Float(smcBytes: value.bytes))
+        case SMCDataType.sp78.rawValue:
+            return Double(Int16(bitPattern: UInt16(bigEndianBytes: (value.bytes[0], value.bytes[1])))) / 256
+        default:
+            return nil
+        }
+    }
+
     private func getDouble(_ key: String) throws -> Double? {
         let value = try readValue(key)
 

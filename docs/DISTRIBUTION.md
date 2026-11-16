@@ -11,14 +11,14 @@ The easiest public distribution path is:
 Build the public zip:
 
 ```sh
-./script/package_release.sh 0.2.1
+./script/package_release.sh 0.3.0
 ```
 
 Upload both files from `artifacts/` to a GitHub Release:
 
 ```text
-MacFan-0.2.1-macos.zip
-MacFan-0.2.1-macos.zip.sha256
+MacFan-0.3.0-macos.zip
+MacFan-0.3.0-macos.zip.sha256
 ```
 
 For a smooth public download, use a Developer ID Application certificate,
@@ -30,7 +30,7 @@ Recommended release notes:
 ```markdown
 ## Install
 
-1. Download `MacFan-0.2.1-macos.zip`.
+1. Download `MacFan-0.3.0-macos.zip`.
 2. Unzip it and move `MacFan.app` to `/Applications`.
 3. Open MacFan.
 4. Make one fan change so macOS can install the privileged helper.

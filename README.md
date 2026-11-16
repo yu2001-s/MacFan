@@ -18,6 +18,8 @@ The SMC access layer follows the shape used by
 - Continuous sliders that apply after a short debounce; no separate Apply step.
 - Privileged helper for fan writes, installed only when a write is needed.
 - `macfanctl` CLI for listing fans, setting RPM, setting mode, and reset.
+- CPU/GPU temperature readout and Smart fan control: a temperature-driven fan
+  curve that runs faster than macOS's quiet-first default without going to Max.
 
 ## Requirements
 
@@ -80,7 +82,36 @@ MacFan.app/Contents/Helpers/macfanctl fans --json
 MacFan.app/Contents/Helpers/macfanctl set-speed --id 0 --rpm 3000
 MacFan.app/Contents/Helpers/macfanctl set-mode --id 0 --mode auto
 MacFan.app/Contents/Helpers/macfanctl reset
+MacFan.app/Contents/Helpers/macfanctl temps [--json]
+MacFan.app/Contents/Helpers/macfanctl smart --profile balanced
 ```
+
+## Smart fan control
+
+`macfanctl smart` keeps running and sets the fans from the temperature every two
+seconds. It reads the CPU and GPU die sensors, averages each group, and follows
+the hotter one along the profile's curve (fan speed as a share of each fan's
+minimum-to-maximum range):
+
+| Profile | Takes over at | 20-30% | ~45-60% | 75-85% | 100% |
+| --- | --- | --- | --- | --- | --- |
+| `quiet` | 65 °C | 15% at 75 °C | 40% at 83 °C | 75% at 89 °C | 94 °C |
+| `balanced` (default) | 56 °C | 20% at 66 °C | 45% at 76 °C | 75% at 84 °C | 91 °C |
+| `cool` | 48 °C | 30% at 58 °C | 60% at 68 °C | 85% at 78 °C | 86 °C |
+
+- Below the first point the fans stay with macOS, which keeps them quiet or off.
+- Readings are smoothed (rises within seconds, falls over about half a minute)
+  and speed falls by at most about 1% a second, so the fans do not hunt.
+- It hands the fans back to macOS once the temperature has stayed a few degrees
+  below the curve, when it is stopped (SIGTERM, SIGINT, SIGHUP), and after five
+  failed readings or writes in a row.
+- Any single sensor at 100 °C sends the fans to maximum at once.
+- `--interval <seconds>` changes the step; `--dry-run` logs what it would set
+  without writing.
+
+Run it under launchd so it restarts if it crashes; the Toolbox Raycast
+extension's Smart Fan command installs that LaunchAgent. Other fan writes (the
+MacFan sliders, Auto, Max) fight it while it runs, so stop it first.
 
 When used from the app, writes run through the installed privileged helper at:
 
